@@ -1,21 +1,26 @@
 CC=gcc
 CFLAGS=-c -Wall -g
 LDFLAGS=-ljpeg
-SOURCES= mandel.c jpegrw.c 
+SOURCES= mandel.c jpegrw.c mandelmovie.c
 OBJECTS=$(SOURCES:.c=.o)
-EXECUTABLE=mandel
+MANDEL_OBJECTS= mandel.o jpegrw.o
+MOVIE_OBJECTS= mandelmovie.o
+EXECUTABLES=mandel mandelmovie
 
-all: $(SOURCES) $(EXECUTABLE) 
+all: $(SOURCES) $(EXECUTABLES)
 
 # pull in dependency info for *existing* .o files
 -include $(OBJECTS:.o=.d)
 
-$(EXECUTABLE): $(OBJECTS)
-	$(CC) $(OBJECTS) $(LDFLAGS) -o $@
+mandel: $(MANDEL_OBJECTS)
+	$(CC) $(MANDEL_OBJECTS) $(LDFLAGS) -o $@
 
-.c.o: 
+mandelmovie: $(MOVIE_OBJECTS)
+	$(CC) $(MOVIE_OBJECTS) -o $@
+
+.c.o:
 	$(CC) $(CFLAGS) $< -o $@
 	$(CC) -MM $< > $*.d
 
 clean:
-	rm -rf $(OBJECTS) $(EXECUTABLE) *.d
+	rm -rf $(OBJECTS) $(EXECUTABLES) *.d
