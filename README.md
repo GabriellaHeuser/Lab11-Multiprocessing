@@ -22,6 +22,14 @@ The 50 frames were combined into a movie with `ffmpeg -i mandel%d.jpg mandel.mpg
 
 ![Runtime vs number of processes](./lab11%20-%20graph.png)
 
+| Threads \ Processes | 1 | 2 | 5 | 10 | 20 |
+|---|---|---|---|---|---|
+| 1 | 161.880s | 88.141s |  |  |  |
+| 2 | 94.871s | 63.692s |  |  |  |
+| 5 | 66.713s | 56.885s |  |  |  |
+| 10 | 46.523s | 44.382s |  |  |  |
+| 20 | 43.068s | 42.720s |  |  |  |
+
 ## Analysis
 At first, more processes speed up the execution time, but eventually we hit the limit of the number of processors on the machine we are using (in my case 12 processors). This means the runtime stops improving once the number of processes reaches roughly the number of processors. The sharp drop at the beginning shows how using more processes does speed up results when extra processors are available. \
 Therefore using more processes does not always speed up the operation because of CPU core limits and the overhead of creating and managing processes.

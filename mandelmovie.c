@@ -12,19 +12,24 @@
 #include <sys/wait.h>
 
 #define MAX_CHILDREN 50
+#define MAX_THREADS 20
 
  int main(int argc, char *argv[]){
     
     int num_children = 0;
+    int num_threads = 0;
     char c;
 
     int running = 0;
 
 
     //get number of children
-    while ((c = getopt(argc, argv, "n:"))!=-1){
+    while ((c = getopt(argc, argv, "n:t:"))!=-1){
         if (c == 'n'){
             num_children = atoi(optarg);
+        }
+        if (c == 't'){
+            num_threads = atoi(optarg);
         }
     }
 
@@ -32,7 +37,12 @@
         printf("Error, number of children must be between 1 and 50\n");
         exit(1);
     }
+    if (num_threads < 1 || num_threads > MAX_THREADS){
+        printf("Error, number of threads must be between 1 and 20\n");
+        exit(1);
+    }
     printf("Number of children: %d\n", num_children);
+    printf("Number of threads: %d\n", num_threads);
 
     float start_scale = 5;
     float end_scale = .05;
@@ -44,6 +54,9 @@
 
         char scale[20];
         snprintf(scale, sizeof scale, "%f", start_scale - (i * scale_step));
+
+        char threads[10];
+        snprintf(threads, sizeof threads, "%d", num_threads);
 
         if (running >= num_children){
             wait(NULL);
@@ -58,7 +71,7 @@
 
         if (pid == 0){
             //child
-            execl("./mandel", "mandel", "-x", "-1", "-y", "-.1", "-s", scale, "-o", filename, (char *)NULL);
+            execl("./mandel", "mandel", "-x", "-1", "-y", "-.1", "-s", scale, "-o", filename, "-t", threads, (char *)NULL);
             perror("execl");
             exit(1);
         }
