@@ -15,7 +15,7 @@
 // thread struct
 struct thread_args {
 	imgRawImage *img;
-    int xmin, xmax, ymin, ymax;
+    double xmin, xmax, ymin, ymax;
 	int max;
 	int rowStart;
 	int rowStop;
@@ -44,7 +44,7 @@ int main( int argc, char *argv[] )
 	int    image_width = 1000;
 	int    image_height = 1000;
 	int    max = 1000;
-	int    num_threads = 0;
+	int    num_threads = 1;
 
 	// For each command line argument given,
 	// override the appropriate configuration value.
@@ -111,7 +111,7 @@ int main( int argc, char *argv[] )
 			args[i].ymax = ycenter + yscale/2;
 			args[i].max = max;
 			args[i].rowStart = i * rows_per_thread;
-			args[i].rowStop = i * rows_per_thread + rows_per_thread;
+			args[i].rowStop = (i == num_threads - 1) ? image_height: (i + 1) * rows_per_thread; //in case not divisible
 			pthread_create(&threads[i], NULL, &thread_image, &args[i]);
 		}
 
